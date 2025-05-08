@@ -24,7 +24,7 @@ epsilon_decay = 0.995        # Decay rate for exploration
 
 # Training loop
 for episode in range(episodes):
-    state = env.reset()
+    state, info = env.reset()
 
     for _ in range(max_steps):
         # Choose action using ε-greedy strategy (explore or exploit)
