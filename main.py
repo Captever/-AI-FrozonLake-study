@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import numpy as np
 
 # Initialize the FrozenLake environment
@@ -12,35 +12,50 @@ action_size = env.action_space.n
 q_table = np.zeros((state_size, action_size))
 
 # Set training parameters
-episodes = 1000          # Total number of training episodes
-max_steps = 100          # Max steps per episode
-alpha = 0.1              # Learning rate
-gamma = 0.99             # Discount factor
-epsilon = 1.0            # Initial exploration rate
-epsilon_min = 0.01       # Minimum exploration rate
-epsilon_decay = 0.995    # Decay rate for exploration
+episodes = 1000              # Total number of training episodes
+max_steps = 100              # Max steps per episode
+alpha = 0.1                  # Learning rate
+gamma = 0.99                 # Discount factor
+epsilon = 1.0                # Initial exploration rate
+epsilon_min = 0.01           # Minimum exploration rate
+epsilon_decay = 0.995        # Decay rate for exploration
 
 # print(env.spec)  # Print environment specification
 
 # Training loop
 for episode in range(episodes):
     state = env.reset()
-    done = False
 
     for _ in range(max_steps):
-        # TODO: Choose action using ε-greedy strategy (explore or exploit)
+        # Choose action using ε-greedy strategy (explore or exploit)
+        if np.random.rand() <= epsilon:  # explore
+            # print("Explore => ", end='')
+            action = env.action_space.sample()
+        else:  # exploit
+            action = np.argmax(q_table)
 
-        # TODO: Execute action in the environment
-        # next_state, reward, done, info = env.step(action)
+        # Execute action in the environment
+        observation, reward, terminated, truncated, info = env.step(action)
 
-        # TODO: Update Q-table using Q-learning update rule
+        # Update Q-table using Q-learning update rule
+        # Q(s, a) + α [r + γ * max(Q(s', a')) - Q(s, a)]
+        # q_table[state, action] = 
 
-        # TODO: Set current state to next_state
+        # Set current state to observation
+        state = observation
+        
+        episode_over = terminated or truncated
 
-        # TODO: Break the loop if the episode is done
+        # Print process
+        # print(f"action: {action}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {info}")
+
+        # Break the loop if the episode is over
+        if episode_over:
+            break
 
         pass  # Placeholder
 
-    # TODO: Decay epsilon (exploration rate)
+    # Decay epsilon (exploration rate)
+    epsilon = max(epsilon * epsilon_decay, epsilon_min)
 
 env.close()
