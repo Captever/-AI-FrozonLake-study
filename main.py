@@ -29,17 +29,20 @@ for episode in range(episodes):
     for _ in range(max_steps):
         # Choose action using ε-greedy strategy (explore or exploit)
         if np.random.rand() <= epsilon:  # explore
-            # print("Explore => ", end='')
+            print("Explore => ", end='')
             action = env.action_space.sample()
         else:  # exploit
-            action = np.argmax(q_table)
+            action = np.argmax(q_table[state])
 
         # Execute action in the environment
         observation, reward, terminated, truncated, info = env.step(action)
 
         # Update Q-table using Q-learning update rule
         # Q(s, a) + α [r + γ * max(Q(s', a')) - Q(s, a)]
-        # q_table[state, action] = 
+        current_q = q_table[state, action]
+        max_future_q = np.max(q_table[observation])
+        updated_q = current_q + alpha * (reward + gamma * max_future_q - current_q)
+        q_table[state, action] = updated_q
 
         # Set current state to observation
         state = observation
@@ -47,7 +50,7 @@ for episode in range(episodes):
         episode_over = terminated or truncated
 
         # Print process
-        # print(f"action: {action}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {info}")
+        print(f"state: {state}, action: {action}, epsilon: {epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {info}")
 
         # Break the loop if the episode is over
         if episode_over:
