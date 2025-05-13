@@ -1,66 +1,46 @@
+import sys
 import pygame
 
-import gymnasium as gym
-import numpy as np
+from scripts.objects import Player, Branch
+from scripts.utils import load_image
+from scripts.tilemap import Tilemap
 
-# Initialize the FrozenLake environment
-env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=True)
+class Main:
+    def __init__(self):
+        pygame.init()
 
-# Get number of states and actions
-state_size = env.observation_space.n
-action_size = env.action_space.n
+        pygame.display.set_caption("Frozen Lake")
+        self.screen = pygame.display.set_mode((640, 480))
 
-# Initialize Q-table with zeros
-q_table = np.zeros((state_size, action_size))
+        self.clock = pygame.time.Clock()
 
-# Set training parameters
-episodes = 1000              # Total number of training episodes
-max_steps = 100              # Max steps per episode
-alpha = 0.1                  # Learning rate
-gamma = 0.99                 # Discount factor
-epsilon = 1.0                # Initial exploration rate
-epsilon_min = 0.01           # Minimum exploration rate
-epsilon_decay = 0.995        # Decay rate for exploration
-
-# print(env.spec)  # Print environment specification
-
-# Training loop
-for episode in range(episodes):
-    state, info = env.reset()
-
-    for _ in range(max_steps):
-        # Choose action using ε-greedy strategy (explore or exploit)
-        if np.random.rand() <= epsilon:  # explore
-            print("Explore => ", end='')
-            action = env.action_space.sample()
-        else:  # exploit
-            action = np.argmax(q_table[state])
-
-        # Execute action in the environment
-        observation, reward, terminated, truncated, info = env.step(action)
-
-        # Update Q-table using Q-learning update rule
-        # Q(s, a) + α [r + γ * max(Q(s', a')) - Q(s, a)]
-        current_q = q_table[state, action]
-        max_future_q = np.max(q_table[observation])
-        updated_q = current_q + alpha * (reward + gamma * max_future_q - current_q)
-        q_table[state, action] = updated_q
-
-        # Set current state to observation
-        state = observation
+        self.assets = {
+            'frozen': load_image('tiles/frozen.png'),
+            'hole': load_image('tiles/hole.png'),
+            'player_back': load_image('objects/player_back.png'),
+            'player_front': load_image('objects/player_front.png'),
+            'player_left': load_image('objects/player_left.png'),
+            'player_right': load_image('objects/player_right.png'),
+            'branch_start': load_image('objects/branch_start.png'),
+            'branch_goal': load_image('objects/branch_goal.png'),
+        }
         
-        episode_over = terminated or truncated
+        self.player = Player()
 
-        # Print process
-        print(f"state: {state}, action: {action}, epsilon: {epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {info}")
+        self.tilemap = Tilemap(self, tile_size = 32)
 
-        # Break the loop if the episode is over
-        if episode_over:
-            break
+    def run(self):
+        while True:
+            self.tilemap.render(self.screen)
+            # self.player.render(self.display)
 
-        pass  # Placeholder
+            for event in pygame.event.get():
+                # when quit button is pressed
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
+            pygame.display.update()
+            self.clock.tick(60)
 
-    # Decay epsilon (exploration rate)
-    epsilon = max(epsilon * epsilon_decay, epsilon_min)
-
-env.close()
+Main().run()
