@@ -37,9 +37,10 @@ class Main:
         self.tilemap = Tilemap(self, map_size=self.map_size, tile_size=tile_size)
 
     def run(self):
+        self.tilemap.update(0, 0)
+        self.tilemap.update(self.map_size ** 2 - 1, 0)
+        
         while True:
-            # self.tilemap.update(0, 0)
-            # self.tilemap.update(self.map_size ** 2 - 1, 0)
 
             for event in pygame.event.get():
                 # when quit button is pressed
