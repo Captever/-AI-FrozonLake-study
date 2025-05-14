@@ -42,6 +42,9 @@ class Main:
         self.tilemap.update(self.start_loc, 0)
         self.tilemap.update(self.goal_loc, 0)
 
+        self.tilemap.add_object(self.start_loc, self.assets['branch_start'])
+        self.tilemap.add_object(self.goal_loc, self.assets['branch_goal'])
+
     def run(self):
         for i in range(1, 34):
             self.tilemap.update(i, 0)
@@ -50,7 +53,6 @@ class Main:
         self.tilemap.update(30, 1)
 
         while True:
-
             for event in pygame.event.get():
                 # when quit button is pressed
                 if event.type == pygame.QUIT:
