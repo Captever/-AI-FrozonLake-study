@@ -5,12 +5,19 @@ from scripts.objects import Player, Branch
 from scripts.utils import load_image
 from scripts.tilemap import Tilemap
 
+GAME_MODE = 2
+SCREEN_SIZE = 960
+
 class Main:
     def __init__(self):
         pygame.init()
 
+        self.map_size = 4 if GAME_MODE == 1 else 8
+        
+        tile_size = SCREEN_SIZE // self.map_size
+
         pygame.display.set_caption("Frozen Lake")
-        self.screen = pygame.display.set_mode((640, 480))
+        self.screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
 
         self.clock = pygame.time.Clock()
 
@@ -27,18 +34,21 @@ class Main:
         
         self.player = Player()
 
-        self.tilemap = Tilemap(self, tile_size = 32)
+        self.tilemap = Tilemap(self, map_size=self.map_size, tile_size=tile_size)
 
     def run(self):
         while True:
-            self.tilemap.render(self.screen)
-            # self.player.render(self.display)
+            # self.tilemap.update(0, 0)
+            # self.tilemap.update(self.map_size ** 2 - 1, 0)
 
             for event in pygame.event.get():
                 # when quit button is pressed
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            
+            self.tilemap.render(self.screen)
+            # self.player.render(self.display)
             
             pygame.display.update()
             self.clock.tick(60)
