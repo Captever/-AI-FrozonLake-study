@@ -32,16 +32,21 @@ class FrozenLakeEnvironment:
     def reset(self):
         self.state, self.info = self.env.reset()
 
-    def step(self):
-        if self.step_num == 0:
-            self.reset()
-
+    def select_action(self):
         # Choose action using ε-greedy strategy (explore or exploit)
         on_explore = np.random.rand() <= self.epsilon
         if on_explore:  # explore
             action = self.env.action_space.sample()
         else:  # exploit
             action = np.argmax(self.q_table[self.state])
+        
+        print(f"{'Explore -> ' if on_explore else ''}Action: {action}")
+
+        return action
+
+    def step(self, action):
+        if self.step_num == 0:
+            self.reset()
 
         # Execute action in the environment
         observation, reward, terminated, truncated, self.info = self.env.step(action)
@@ -58,7 +63,7 @@ class FrozenLakeEnvironment:
         self.state = observation
         
         # Print process
-        print(f"{'Explore => ' if on_explore else ''}state: {self.state}, action: {action}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
+        print(f"state: {self.state}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
 
         # Handle the episode is over
         episode_over = terminated or truncated or self.step_num >= self.max_steps

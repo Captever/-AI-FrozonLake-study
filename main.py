@@ -48,18 +48,17 @@ class Main:
         self.tilemap.add_object(self.goal_loc, self.assets['branch_goal'])
 
         self.env = FrozenLakeEnvironment()
+        self.action = None
     
     def handle_key_down(self, event):
         if event.key == pygame.K_SPACE:
-            self.env.step()
+            if self.action is None:
+                self.action = self.env.select_action()
+            else:
+                self.env.step(self.action)
+                self.action = None
 
     def run(self):
-        for i in range(1, 34):
-            self.tilemap.update(i, 0)
-        self.tilemap.update(10, 1)
-        self.tilemap.update(3, 1)
-        self.tilemap.update(30, 1)
-
         while True:
             for event in pygame.event.get():
                 # when quit button is pressed
