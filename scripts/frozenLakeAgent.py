@@ -57,8 +57,8 @@ class FrozenLakeEnvironment:
         # Set current state to observation
         self.state = observation
         
-        # # Print process
-        # print(f"{'Explore => ' if on_explore else ''}state: {self.state}, action: {action}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
+        # Print process
+        print(f"{'Explore => ' if on_explore else ''}state: {self.state}, action: {action}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
 
         # Handle the episode is over
         episode_over = terminated or truncated or self.step_num >= self.max_steps
