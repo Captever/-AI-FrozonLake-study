@@ -15,7 +15,8 @@ class Main:
 
         map_size = 4 if GAME_MODE == 1 else 8
         tile_size = SCREEN_SIZE // map_size
-        object_size = tile_size * 0.8
+        player_size = tile_size * 0.8
+        branch_size = tile_size * 0.4
 
         pygame.display.set_caption("Frozen Lake")
         self.screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
@@ -25,12 +26,12 @@ class Main:
         self.assets = {
             'frozen': load_image('tiles/frozen.png', tile_size),
             'hole': load_image('tiles/hole.png', tile_size),
-            'player_back': load_image('objects/player_back.png', object_size),
-            'player_front': load_image('objects/player_front.png', object_size),
-            'player_left': load_image('objects/player_left.png', object_size),
-            'player_right': load_image('objects/player_right.png', object_size),
-            'branch_start': load_image('objects/branch_start.png', object_size),
-            'branch_goal': load_image('objects/branch_goal.png', object_size),
+            'player_back': load_image('objects/player_back.png', player_size),
+            'player_front': load_image('objects/player_front.png', player_size),
+            'player_left': load_image('objects/player_left.png', player_size),
+            'player_right': load_image('objects/player_right.png', player_size),
+            'branch_start': load_image('objects/branch_start.png', branch_size),
+            'branch_goal': load_image('objects/branch_goal.png', branch_size),
         }
         
         self.player = Player()
