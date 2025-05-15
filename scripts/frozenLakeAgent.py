@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 
-class gymEnv:
+class FrozenLakeEnvironment:
     def init(self):
         # Initialize the FrozenLake environment
         self.env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=True)

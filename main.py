@@ -4,6 +4,7 @@ import pygame
 from scripts.objects import Player, Branch
 from scripts.utils import load_image
 from scripts.tilemap import Tilemap
+from scripts.frozenLakeAgent import FrozenLakeEnvironment
 
 GAME_MODE = 2
 SCREEN_SIZE = 960
@@ -45,6 +46,12 @@ class Main:
         self.tilemap.add_object(self.start_loc, self.assets['branch_start'])
         self.tilemap.add_object(self.goal_loc, self.assets['branch_goal'])
 
+        self.env = FrozenLakeEnvironment()
+    
+    def handle_key_down(self, event):
+        if event.key == pygame.K_SPACE:
+            self.env.step()
+
     def run(self):
         for i in range(1, 34):
             self.tilemap.update(i, 0)
@@ -58,6 +65,8 @@ class Main:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self.handle_key_down(event)
             
             self.tilemap.render(self.screen)
             # self.player.render(self.display)
