@@ -18,6 +18,9 @@ class Tilemap:
         for _ in range(map_size ** 2):
             self.tiles.append(-1)
             self.objects.append([])
+    
+    def check_tile_type(self, loc: int):
+        return self.tiles[loc]
 
     def update(self, loc: int, tile_type: int):
         self.tiles[loc] = tile_type
