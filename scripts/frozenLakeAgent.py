@@ -2,9 +2,9 @@ import gymnasium as gym
 import numpy as np
 
 class FrozenLakeEnvironment:
-    def __init__(self):
+    def __init__(self, map_name, is_slippery):
         # Initialize the FrozenLake environment
-        self.env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=True)
+        self.env = gym.make("FrozenLake-v1", map_name=map_name, is_slippery=is_slippery)
 
         # Get number of states and actions
         self.state_size = self.env.observation_space.n
@@ -63,7 +63,7 @@ class FrozenLakeEnvironment:
         self.state = observation
         
         # Print process
-        print(f"state: {self.state}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
+        print(f"Step{self.step_num} | state: {self.state}, epsilon: {self.epsilon:.3f}, reward: {reward}, episode_over: {terminated} | {truncated}, info: {self.info}")
 
         # Handle the episode is over
         episode_over = terminated or truncated or self.step_num >= self.max_steps
@@ -72,6 +72,8 @@ class FrozenLakeEnvironment:
             self.episode_num += 1
             # Decay epsilon (exploration rate)
             self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
+        
+        return self.state
 
     def close(self):
         self.env.close()
