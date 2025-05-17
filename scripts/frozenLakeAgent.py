@@ -2,8 +2,9 @@ import gymnasium as gym
 import numpy as np
 
 class FrozenLakeEnvironment:
-    def __init__(self, map_name, is_slippery):
+    def __init__(self, map_size, is_slippery):
         # Initialize the FrozenLake environment
+        map_name = f"{map_size}x{map_size}"
         self.env = gym.make("FrozenLake-v1", map_name=map_name, is_slippery=is_slippery)
 
         # Get number of states and actions
@@ -73,7 +74,7 @@ class FrozenLakeEnvironment:
             # Decay epsilon (exploration rate)
             self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
         
-        return self.state
+        return self.state, terminated, truncated
 
     def close(self):
         self.env.close()
