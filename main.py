@@ -13,11 +13,11 @@ class Main:
     def __init__(self):
         pygame.init()
 
-        map_size = 4 if GAME_MODE == 1 else 8
-        map_name = "4x4" if GAME_MODE == 1 else "8x8"
-        tile_size = SCREEN_SIZE // map_size
+        self.map_size = 4 if GAME_MODE == 1 else 8
+        tile_size = SCREEN_SIZE // self.map_size
         player_size = tile_size * 0.8
         branch_size = tile_size * 0.4
+        self.directional_distances = [-1, self.map_size, 1, -self.map_size]
 
         pygame.display.set_caption("Frozen Lake")
         self.screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
@@ -36,11 +36,11 @@ class Main:
         }
 
         self.start_loc = 0
-        self.goal_loc = map_size ** 2 - 1
+        self.goal_loc = self.map_size ** 2 - 1
         self.player_pos = self.start_loc
         
-        self.player = Player(self, self.start_loc, map_size=map_size, tile_size=tile_size)
-        self.tilemap = Tilemap(self, map_size=map_size, tile_size=tile_size)
+        self.player = Player(self, self.start_loc, map_size=self.map_size, tile_size=tile_size)
+        self.tilemap = Tilemap(self, map_size=self.map_size, tile_size=tile_size)
 
         self.tilemap.update(self.start_loc, 0)
         self.tilemap.update(self.goal_loc, 0)
@@ -48,7 +48,7 @@ class Main:
         self.tilemap.add_object(self.start_loc, self.assets['branch_start'])
         self.tilemap.add_object(self.goal_loc, self.assets['branch_goal'])
 
-        self.env = FrozenLakeEnvironment(map_name=map_name, is_slippery=True)
+        self.env = FrozenLakeEnvironment(map_size=self.map_size, is_slippery=True)
         self.action = None
     
     def handle_key_down(self, event):
