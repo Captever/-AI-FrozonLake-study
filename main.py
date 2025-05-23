@@ -41,15 +41,19 @@ class Main:
         
         self.player = Player(self, self.start_loc, map_size=self.map_size, tile_size=tile_size)
         self.tilemap = Tilemap(self, map_size=self.map_size, tile_size=tile_size)
-
-        self.tilemap.update(self.start_loc, 0)
-        self.tilemap.update(self.goal_loc, 0)
+        self.frozens = [self.start_loc, self.goal_loc]
+        self.holes = []
 
         self.tilemap.add_object(self.start_loc, self.assets['branch_start'])
         self.tilemap.add_object(self.goal_loc, self.assets['branch_goal'])
 
         self.env = FrozenLakeEnvironment(map_size=self.map_size, is_slippery=True)
         self.action = None
+    
+    def update_player_loc(self, loc):
+        self.player.update_loc(loc)
+        if loc not in self.frozens:
+            self.frozens.append(loc)
     
     def handle_key_down(self, event):
         if event.key == pygame.K_SPACE:
@@ -73,7 +77,7 @@ class Main:
                 elif event.type == pygame.KEYDOWN:
                     self.handle_key_down(event)
             
-            self.tilemap.render(self.screen)
+            self.tilemap.render(self.screen, self.frozens, self.holes)
             self.player.render(self.screen)
             
             pygame.display.update()
