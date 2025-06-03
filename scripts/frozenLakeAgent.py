@@ -33,13 +33,19 @@ class FrozenLakeEnvironment:
     def reset(self):
         self.state, self.info = self.env.reset()
 
+    def random_argmax(self, state):
+        q_values = self.q_table[state]
+        max_value = max(q_values)
+        max_indices = np.flatnonzero(q_values == max_value)
+        return np.random.choice(max_indices)
+
     def select_action(self):
         # Choose action using ε-greedy strategy (explore or exploit)
         on_explore = np.random.rand() <= self.epsilon
         if on_explore:  # explore
             action = self.env.action_space.sample()
         else:  # exploit
-            action = np.argmax(self.q_table[self.state])
+            action = self.random_argmax(self.state)
         
         print(f"{'Explore -> ' if on_explore else ''}Action: {action}")
 
