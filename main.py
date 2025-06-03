@@ -49,21 +49,35 @@ class Main:
 
         self.env = FrozenLakeEnvironment(map_size=self.map_size, is_slippery=True)
         self.action = None
+
+        self.flag_play = False
     
     def update_player_loc(self, loc):
         self.player.update_loc(loc)
         if loc not in self.frozens:
             self.frozens.append(loc)
     
+    
+    def set_new_action(self):
+        self.action = self.env.select_action()
+        self.player.update_action(self.action)
+    
+    def set_next_pos(self):
+        prev_pos = self.player_pos
+        self.player_pos, terminated, _ = self.env.step(self.action)
+        
+        self.update_player_loc(self.player_pos)
+        self.action = None
+    
+    def do_process(self):
+        if self.action is None:
+            self.set_new_action()
+        else:
+            self.set_next_pos()
+    
     def handle_key_down(self, event):
         if event.key == pygame.K_SPACE:
-            if self.action is None:
-                self.action = self.env.select_action()
-                self.player.update_action(self.action)
-            else:
-                loc = self.env.step(self.action)
-                self.player.update_loc(loc)
-                self.action = None
+            self.flag_play = not self.flag_play
 
     def run(self):
         while True:
@@ -76,6 +90,9 @@ class Main:
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
                     self.handle_key_down(event)
+            
+            if self.flag_play:
+                self.do_process()
             
             self.tilemap.render(self.screen, self.frozens, self.holes)
             self.player.render(self.screen)
